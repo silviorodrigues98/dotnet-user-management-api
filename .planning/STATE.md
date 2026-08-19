@@ -5,25 +5,30 @@
 See: .planning/PROJECT.md (updated 2026-08-19)
 
 **Core value:** O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT.
-**Current focus:** Phase 1 — MVP Rodando
+**Current focus:** Phase 1 — MVP Rodando (✓ completa)
 
 ## Status
 
-- **Current phase:** Phase 1 (idle)
-- **Completed plans:** 0
+- **Current phase:** Phase 1 (complete)
+- **Completed plans:** 1
 - **Active workstreams:** none
 
 ## Phase Progress
 
 | Phase | Status | Plans | Progress |
 |-------|--------|-------|----------|
-| 1 — MVP Rodando | ○ Pending | 0/N | 0% |
+| 1 — MVP Rodando | ✓ Complete | 1/1 | 100% |
+| 2 — Docker & Docs (Extra) | ○ Pending | 0/1 | 0% |
 
-## Notes
+## Notas
 
-- SDK .NET 8.0.424 instalado localmente em ~/.dotnet
-- Ambiente WSL2 sem libicu → InvariantGlobalization habilitado no projeto da API
-- Banco local: SQLite; PostgreSQL será adicionado na Phase 2 (Docker)
+- MVP validado: build 0 erros, 12 testes verdes, fluxo curl 201/409/400/200/401/200
+- Commit `feat: implementa MVP da API...` (eed4671)
+- Banco local SQLite (`app.db`, gitignored); migração inicial em `Infrastructure/Persistence/Migrations`
+
+## Próximo
+
+- Phase 2 (extra): Dockerfile multi-stage, docker-compose com PostgreSQL, ARCHITECTURE.md e CI/CD
 
 ---
-*Last updated: 2026-08-19 after initialization*
+*Last updated: 2026-08-19 after Phase 1 complete*
