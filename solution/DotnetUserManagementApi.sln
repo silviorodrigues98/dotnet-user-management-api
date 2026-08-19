@@ -1,0 +1,46 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetUserManagementApi.Domain", "..\src\DotnetUserManagementApi.Domain\DotnetUserManagementApi.Domain.csproj", "{B100F56E-4C5D-4D7A-94A1-42C6BC60A7D7}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetUserManagementApi.Application", "..\src\DotnetUserManagementApi.Application\DotnetUserManagementApi.Application.csproj", "{CB06F780-7C69-484E-844B-6B60481C7437}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetUserManagementApi.Infrastructure", "..\src\DotnetUserManagementApi.Infrastructure\DotnetUserManagementApi.Infrastructure.csproj", "{1E28EFCF-6BD5-47DE-922D-11E2FAE826A2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetUserManagementApi.Api", "..\src\DotnetUserManagementApi.Api\DotnetUserManagementApi.Api.csproj", "{556629B6-91FE-459F-A59D-921D977F5633}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DotnetUserManagementApi.Tests", "..\tests\DotnetUserManagementApi.Tests\DotnetUserManagementApi.Tests.csproj", "{B4A66054-7744-44F5-A696-35292A186177}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{B100F56E-4C5D-4D7A-94A1-42C6BC60A7D7}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B100F56E-4C5D-4D7A-94A1-42C6BC60A7D7}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B100F56E-4C5D-4D7A-94A1-42C6BC60A7D7}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B100F56E-4C5D-4D7A-94A1-42C6BC60A7D7}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CB06F780-7C69-484E-844B-6B60481C7437}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CB06F780-7C69-484E-844B-6B60481C7437}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CB06F780-7C69-484E-844B-6B60481C7437}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CB06F780-7C69-484E-844B-6B60481C7437}.Release|Any CPU.Build.0 = Release|Any CPU
+		{1E28EFCF-6BD5-47DE-922D-11E2FAE826A2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1E28EFCF-6BD5-47DE-922D-11E2FAE826A2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1E28EFCF-6BD5-47DE-922D-11E2FAE826A2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1E28EFCF-6BD5-47DE-922D-11E2FAE826A2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{556629B6-91FE-459F-A59D-921D977F5633}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{556629B6-91FE-459F-A59D-921D977F5633}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{556629B6-91FE-459F-A59D-921D977F5633}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{556629B6-91FE-459F-A59D-921D977F5633}.Release|Any CPU.Build.0 = Release|Any CPU
+		{B4A66054-7744-44F5-A696-35292A186177}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{B4A66054-7744-44F5-A696-35292A186177}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{B4A66054-7744-44F5-A696-35292A186177}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{B4A66054-7744-44F5-A696-35292A186177}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
