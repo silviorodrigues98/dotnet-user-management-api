@@ -1,0 +1,24 @@
+@DotnetUserManagementApi_HostAddress = http://localhost:5290
+
+### Register
+POST {{DotnetUserManagementApi_HostAddress}}/api/auth/register
+Content-Type: application/json
+
+{
+  "name": "Ana Souza",
+  "email": "ana@example.com",
+  "password": "senha12345"
+}
+
+### Login
+POST {{DotnetUserManagementApi_HostAddress}}/api/auth/login
+Content-Type: application/json
+
+{
+  "email": "ana@example.com",
+  "password": "senha12345"
+}
+
+### List users (protected - use token from login)
+GET {{DotnetUserManagementApi_HostAddress}}/api/users
+Authorization: Bearer <seu-token-aqui>

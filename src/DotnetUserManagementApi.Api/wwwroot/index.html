@@ -1,0 +1,243 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>dotnet-user-management-api</title>
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body {
+      font-family: system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: #0f172a;
+      color: #e2e8f0;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 2rem 1rem;
+    }
+    h1 { font-size: 1.6rem; margin-bottom: 1.5rem; color: #f8fafc; }
+    h2 { font-size: 1.1rem; margin-bottom: 1rem; }
+    .card {
+      width: 100%;
+      max-width: 560px;
+      background: #1e293b;
+      border: 1px solid #334155;
+      border-radius: 12px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+    }
+    .tabs { display: flex; gap: 0.5rem; margin-bottom: 1.25rem; }
+    .tab {
+      flex: 1;
+      padding: 0.6rem;
+      text-align: center;
+      background: #334155;
+      color: #cbd5e1;
+      border: none;
+      border-radius: 8px;
+      cursor: pointer;
+      font-weight: 600;
+    }
+    .tab.active { background: #2563eb; color: #fff; }
+    label { display: block; font-size: 0.85rem; margin: 0.85rem 0 0.3rem; color: #94a3b8; }
+    input {
+      width: 100%;
+      padding: 0.6rem 0.75rem;
+      border-radius: 8px;
+      border: 1px solid #475569;
+      background: #0f172a;
+      color: #e2e8f0;
+      font-size: 0.95rem;
+    }
+    input:focus { outline: none; border-color: #2563eb; }
+    button.primary {
+      width: 100%;
+      margin-top: 1.25rem;
+      padding: 0.7rem;
+      border: none;
+      border-radius: 8px;
+      background: #2563eb;
+      color: #fff;
+      font-weight: 700;
+      font-size: 0.95rem;
+      cursor: pointer;
+    }
+    button.primary:hover { background: #1d4ed8; }
+    button.secondary {
+      padding: 0.4rem 0.8rem;
+      border: 1px solid #475569;
+      border-radius: 6px;
+      background: transparent;
+      color: #e2e8f0;
+      cursor: pointer;
+      font-size: 0.85rem;
+    }
+    .message { margin-top: 0.9rem; font-size: 0.9rem; min-height: 1.2em; }
+    .message.error { color: #f87171; }
+    .message.success { color: #4ade80; }
+    table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    th, td { text-align: left; padding: 0.55rem 0.5rem; border-bottom: 1px solid #334155; }
+    th { color: #94a3b8; font-weight: 600; }
+    .hidden { display: none; }
+    .toolbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem; }
+    .badge { background: #2563eb; color: #fff; padding: 0.2rem 0.6rem; border-radius: 999px; font-size: 0.75rem; }
+  </style>
+</head>
+<body>
+  <h1>Gerenciamento de Usuários</h1>
+
+  <section class="card" id="authCard">
+    <div class="tabs">
+      <button id="tabLogin" class="tab active" onclick="switchTab('login')">Entrar</button>
+      <button id="tabRegister" class="tab" onclick="switchTab('register')">Cadastrar</button>
+    </div>
+
+    <form id="loginForm" onsubmit="submitLogin(event)">
+      <label for="loginEmail">E-mail</label>
+      <input id="loginEmail" type="email" required placeholder="voce@exemplo.com" />
+      <label for="loginPassword">Senha</label>
+      <input id="loginPassword" type="password" required minlength="8" placeholder="••••••••" />
+      <button class="primary" type="submit">Entrar</button>
+      <p id="loginMessage" class="message"></p>
+    </form>
+
+    <form id="registerForm" class="hidden" onsubmit="submitRegister(event)">
+      <label for="regName">Nome</label>
+      <input id="regName" type="text" required maxlength="100" placeholder="Seu nome" />
+      <label for="regEmail">E-mail</label>
+      <input id="regEmail" type="email" required placeholder="voce@exemplo.com" />
+      <label for="regPassword">Senha (mín. 8 caracteres)</label>
+      <input id="regPassword" type="password" required minlength="8" placeholder="••••••••" />
+      <button class="primary" type="submit">Cadastrar</button>
+      <p id="registerMessage" class="message"></p>
+    </form>
+  </section>
+
+  <section class="card hidden" id="usersCard">
+    <div class="toolbar">
+      <h2>Usuários cadastrados</h2>
+      <span class="badge" id="loggedUser"></span>
+    </div>
+    <button class="secondary" onclick="logout()">Sair</button>
+    <table>
+      <thead>
+        <tr><th>Nome</th><th>E-mail</th><th>Cadastrado em</th></tr>
+      </thead>
+      <tbody id="usersBody"></tbody>
+    </table>
+    <p id="usersMessage" class="message"></p>
+  </section>
+
+  <script>
+    const state = { token: null, email: null };
+
+    function switchTab(tab) {
+      document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');
+      document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
+      document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
+      document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+    }
+
+    async function request(path, options) {
+      const res = await fetch(path, options);
+      const isJson = res.headers.get('content-type')?.includes('application/json');
+      const body = isJson ? await res.json() : null;
+      if (!res.ok) {
+        const detail = body?.detail || (body?.errors ? Object.values(body.errors).flat().join(' ') : 'Erro inesperado.');
+        throw new Error(detail);
+      }
+      return body;
+    }
+
+    async function submitRegister(event) {
+      event.preventDefault();
+      const message = document.getElementById('registerMessage');
+      message.className = 'message';
+      message.textContent = 'Cadastrando...';
+      try {
+        await request('/api/auth/register', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            name: document.getElementById('regName').value,
+            email: document.getElementById('regEmail').value,
+            password: document.getElementById('regPassword').value
+          })
+        });
+        message.className = 'message success';
+        message.textContent = 'Conta criada! Faça login para continuar.';
+        switchTab('login');
+      } catch (error) {
+        message.className = 'message error';
+        message.textContent = error.message;
+      }
+    }
+
+    async function submitLogin(event) {
+      event.preventDefault();
+      const message = document.getElementById('loginMessage');
+      message.className = 'message';
+      message.textContent = 'Autenticando...';
+      try {
+        const data = await request('/api/auth/login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({
+            email: document.getElementById('loginEmail').value,
+            password: document.getElementById('loginPassword').value
+          })
+        });
+        state.token = data.token;
+        state.email = data.user.email;
+        showUsers();
+      } catch (error) {
+        message.className = 'message error';
+        message.textContent = error.message;
+      }
+    }
+
+    async function loadUsers() {
+      const body = await request('/api/users', {
+        headers: { 'Authorization': 'Bearer ' + state.token }
+      });
+      const tbody = document.getElementById('usersBody');
+      tbody.innerHTML = '';
+      for (const user of body) {
+        const tr = document.createElement('tr');
+        const tdName = document.createElement('td');
+        tdName.textContent = user.name;
+        const tdEmail = document.createElement('td');
+        tdEmail.textContent = user.email;
+        const tdDate = document.createElement('td');
+        tdDate.textContent = new Date(user.createdAtUtc).toLocaleString('pt-BR');
+        tr.append(tdName, tdEmail, tdDate);
+        tbody.appendChild(tr);
+      }
+    }
+
+    async function showUsers() {
+      document.getElementById('authCard').classList.add('hidden');
+      document.getElementById('usersCard').classList.remove('hidden');
+      document.getElementById('loggedUser').textContent = state.email;
+      document.getElementById('usersMessage').className = 'message';
+      document.getElementById('usersMessage').textContent = 'Carregando...';
+      try {
+        await loadUsers();
+        document.getElementById('usersMessage').textContent = '';
+      } catch (error) {
+        document.getElementById('usersMessage').className = 'message error';
+        document.getElementById('usersMessage').textContent = error.message;
+      }
+    }
+
+    function logout() {
+      state.token = null;
+      state.email = null;
+      document.getElementById('usersCard').classList.add('hidden');
+      document.getElementById('authCard').classList.remove('hidden');
+      switchTab('login');
+    }
+  </script>
+</body>
+</html>
