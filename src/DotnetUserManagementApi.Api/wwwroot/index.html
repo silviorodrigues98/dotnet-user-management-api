@@ -4,6 +4,7 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>dotnet-user-management-api</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     body {
@@ -95,20 +96,20 @@
 
     <form id="loginForm" onsubmit="submitLogin(event)">
       <label for="loginEmail">E-mail</label>
-      <input id="loginEmail" type="email" required placeholder="voce@exemplo.com" />
+      <input id="loginEmail" type="email" required placeholder="voce@exemplo.com" oninput="clearMessage('loginMessage')" />
       <label for="loginPassword">Senha</label>
-      <input id="loginPassword" type="password" required minlength="8" placeholder="••••••••" />
+      <input id="loginPassword" type="password" required minlength="8" placeholder="••••••••" oninput="clearMessage('loginMessage')" />
       <button class="primary" type="submit">Entrar</button>
       <p id="loginMessage" class="message"></p>
     </form>
 
     <form id="registerForm" class="hidden" onsubmit="submitRegister(event)">
       <label for="regName">Nome</label>
-      <input id="regName" type="text" required maxlength="100" placeholder="Seu nome" />
+      <input id="regName" type="text" required maxlength="100" placeholder="Seu nome" oninput="clearMessage('registerMessage')" />
       <label for="regEmail">E-mail</label>
-      <input id="regEmail" type="email" required placeholder="voce@exemplo.com" />
+      <input id="regEmail" type="email" required placeholder="voce@exemplo.com" oninput="clearMessage('registerMessage')" />
       <label for="regPassword">Senha (mín. 8 caracteres)</label>
-      <input id="regPassword" type="password" required minlength="8" placeholder="••••••••" />
+      <input id="regPassword" type="password" required minlength="8" placeholder="••••••••" oninput="clearMessage('registerMessage')" />
       <button class="primary" type="submit">Cadastrar</button>
       <p id="registerMessage" class="message"></p>
     </form>
@@ -131,6 +132,12 @@
 
   <script>
     const state = { token: null, email: null };
+
+    function clearMessage(id) {
+      const el = document.getElementById(id);
+      el.textContent = '';
+      el.className = 'message';
+    }
 
     function switchTab(tab) {
       document.getElementById('loginForm').classList.toggle('hidden', tab !== 'login');

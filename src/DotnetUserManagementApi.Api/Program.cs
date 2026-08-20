@@ -97,6 +97,9 @@ app.UseAuthorization();
 
 app.MapControllers();
 
+app.MapGet("/favicon.ico", () =>
+    Results.File(Path.Combine(app.Environment.WebRootPath, "favicon.svg"), "image/svg+xml"));
+
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
