@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using Microsoft.OpenApi.Models;
+using Npgsql;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -20,9 +21,17 @@ var jwtOptions = jwtSection.Get<JwtOptions>() ?? new JwtOptions();
 
 if (string.IsNullOrWhiteSpace(jwtOptions.Key))
 {
-    jwtOptions.Key = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
-    builder.Configuration["Jwt:Key"] = jwtOptions.Key;
-    Console.WriteLine("[SECURITY] Jwt:Key não configurado. Chave aleatória gerada para esta execução (desenvolvimento local).");
+    if (builder.Environment.IsDevelopment())
+    {
+        jwtOptions.Key = Convert.ToHexString(RandomNumberGenerator.GetBytes(64));
+        builder.Configuration["Jwt:Key"] = jwtOptions.Key;
+        Console.WriteLine("[SECURITY] Jwt:Key não configurado. Chave aleatória gerada para esta execução (desenvolvimento local).");
+    }
+    else
+    {
+        // D-08: fail-fast — JWT__KEY (Jwt:Key) é obrigatória fora do ambiente de desenvolvimento
+        throw new InvalidOperationException("JWT__KEY (Jwt:Key) é obrigatório em produção. Defina a variável de ambiente JWT__KEY antes de iniciar a API.");
+    }
 }
 
 builder.Services.Configure<JwtOptions>(jwtSection);
@@ -103,7 +112,36 @@ app.MapGet("/favicon.ico", () =>
 using (var scope = app.Services.CreateScope())
 {
     var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
-    dbContext.Database.Migrate();
+    var databaseProvider = app.Configuration.GetConnectionString("Database");
+
+    if (string.Equals(databaseProvider, "Postgres", StringComparison.OrdinalIgnoreCase))
+    {
+        // D-02/D-07: PostgreSQL (Docker) aplica migrações EF Core no startup com retry limitado
+        const int maxAttempts = 10;
+        for (var attempt = 1; attempt <= maxAttempts; attempt++)
+        {
+            try
+            {
+                dbContext.Database.Migrate();
+                break;
+            }
+            catch (NpgsqlException ex)
+            {
+                Console.WriteLine($"[DB] PostgreSQL indisponível — tentativa {attempt}/{maxAttempts}. Aguardando 2s... ({ex.Message})");
+                if (attempt == maxAttempts)
+                {
+                    throw;
+                }
+
+                Thread.Sleep(TimeSpan.FromSeconds(2));
+            }
+        }
+    }
+    else
+    {
+        // D-02: local (SQLite) usa EnsureCreated — zero migrações
+        dbContext.Database.EnsureCreated();
+    }
 }
 
 app.Run();
