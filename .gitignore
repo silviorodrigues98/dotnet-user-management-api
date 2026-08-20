@@ -34,3 +34,6 @@ Thumbs.db
 *.db-shm
 *.db-wal
 *.sqlite
+
+# Playwright MCP artifacts
+.playwright-mcp/
