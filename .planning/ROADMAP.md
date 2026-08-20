@@ -18,11 +18,11 @@
 
 **Mode:** mvp
 
-**Plans:** 2 plans (gap closure from UI audit)
+**Plans:** 1/2 plans executed
 Plans:
 **Wave 1**
 
-- [ ] 01-01-PLAN.md — Blocker fixes: real error messages, visible register success, no mobile overflow
+- [x] 01-01-PLAN.md — Blocker fixes: real error messages, visible register success, no mobile overflow
 
 **Wave 2** *(blocked on Wave 1 completion)*
 

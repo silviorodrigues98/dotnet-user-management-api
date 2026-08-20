@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-08-20T14:24:20.866Z"
-last_activity: 2026-08-20 -- Phase 01 planning complete
+last_updated: "2026-08-20T14:27:52.100Z"
+last_activity: 2026-08-20 -- Phase 01 execution started
 progress:
   total_phases: 2
   completed_phases: 1
-  total_plans: 2
+  total_plans: 4
   completed_plans: 2
   percent: 50
 current_phase: 2
@@ -23,14 +23,14 @@ current_phase_name: Docker & Docs
 See: .planning/PROJECT.md (updated 2026-08-19)
 
 **Core value:** O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT.
-**Current focus:** Phase 2 — Docker & Docs (Extra / Pós-MVP)
+**Current focus:** Phase 01 — mvp-rodando
 
 ## Current Position
 
-Phase: 02 of 2 (Docker & Docs)
-Plan: Not started
-Status: Ready to execute
-Last activity: 2026-08-20 -- Phase 01 planning complete
+Phase: 01 (mvp-rodando) — EXECUTING
+Plan: 1 of 2
+Status: Executing Phase 01
+Last activity: 2026-08-20 -- Phase 01 execution started
 
 Progress: [█████░░░░░] 50%
 
