@@ -1,0 +1,8 @@
+# Exclui o .env do build context — segredos nunca entram nas camadas da imagem (T-02-03)
+.env
+.git
+**/bin
+**/obj
+.planning
+*.md
+.playwright-mcp

@@ -1,0 +1,43 @@
+# docker-compose prod-like: API + PostgreSQL 16 (D-05/D-06/D-07)
+# Requer um arquivo .env na raiz (cp .env.example .env) com JWT__KEY e POSTGRES_PASSWORD.
+# Fail-fast do compose: ${VAR:?} aborta a subida se a variável não estiver definida (D-08/D-09).
+
+services:
+  db:
+    image: postgres:16
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-app}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?}
+      POSTGRES_DB: ${POSTGRES_DB:-dotnet_user_management}
+    volumes:
+      # Volume nomeado — persistência dos dados (D-06); sem bind mount (nada sensível no tree do repo)
+      - postgres_data:/var/lib/postgresql/data
+    healthcheck:
+      # Readiness do banco para o depends_on da API (D-07)
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-app} -d ${POSTGRES_DB:-dotnet_user_management}"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+      start_period: 10s
+    restart: unless-stopped
+    # T-02-04: sem ports: — o PostgreSQL fica apenas na rede interna do compose
+
+  api:
+    build: .
+    environment:
+      # Prod-like (D-05): Swagger desligado, persistência real, Jwt:Key obrigatória
+      ASPNETCORE_ENVIRONMENT: Production
+      ASPNETCORE_URLS: http://+:8080
+      # Padrão double-underscore do dotnet: ConnectionStrings__X e Jwt__X sobrescrevem appsettings.json
+      ConnectionStrings__Database: Postgres
+      ConnectionStrings__Default: Host=db;Port=5432;Database=${POSTGRES_DB:-dotnet_user_management};Username=${POSTGRES_USER:-app};Password=${POSTGRES_PASSWORD:?}
+      Jwt__Key: ${JWT__KEY:?}
+    ports:
+      - "5290:8080"
+    depends_on:
+      db:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  postgres_data:
