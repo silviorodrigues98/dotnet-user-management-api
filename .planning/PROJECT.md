@@ -12,14 +12,14 @@ O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com
 
 ### Validated
 
-(None yet — ship to validate)
+- [x] **AUTH-01**: User can sign up with name, email and password — Validated in Phase 1
+- [x] **AUTH-02**: User can log in with email/password and receive a JWT — Validated in Phase 1
+- [x] **USER-01**: Authenticated user can list registered users — Validated in Phase 1
+- [x] **QUAL-01**: Password hashing and error handling follow best practices — Validated in Phase 1
 
 ### Active
 
-- [ ] **AUTH-01**: User can sign up with name, email and password
-- [ ] **AUTH-02**: User can log in with email/password and receive a JWT
-- [ ] **USER-01**: Authenticated user can list registered users
-- [ ] **QUAL-01**: Password hashing and error handling follow best practices
+- (none)
 
 ### Out of Scope
 
@@ -44,11 +44,16 @@ Desafio técnico de empresa de desenvolvimento (.NET). Ambiente WSL2 Ubuntu 26.0
 
 | Decision | Rationale | Outcome |
 |----------|-----------|---------|
-| Clean Architecture | Camadas claras, testável, alinhada ao desafio | — Pending |
-| JWT (HS256) + BCrypt | API stateless, hash forte | — Pending |
-| EF Core + SQLite (local) | Zero dependências para rodar | — Pending |
-| InvariantGlobalization | Ambiente sem libicu; execução garantida | — Pending |
-| Conventional commits | Padronização exigida | — Pending |
+| Clean Architecture | Camadas claras, testável, alinhada ao desafio | — Implemented |
+| JWT (HS256) + BCrypt | API stateless, hash forte | — Implemented |
+| EF Core + SQLite (local) | Zero dependências para rodar | — Implemented |
+| InvariantGlobalization | Ambiente sem libicu; execução garantida | — Implemented |
+| Conventional commits | Padronização exigida | — Implemented |
+| Dual-provider (SQLite local \| PostgreSQL Docker) | Run local zero-dependência + compose prod-like com Postgres 16 | — Implemented (Phase 2) |
+| Fail-fast JWT__KEY | Chave obrigatória fora de Development; placeholder/fraca rejeitada | — Implemented (Phase 2) |
+| Docker compose prod-like | postgres:16 + volume + healthcheck, API non-root na porta 5290:8080 | — Implemented (Phase 2) |
+| ARCHITECTURE.md (Mermaid, PT-BR) | Entregável do desafio | — Implemented (Phase 2) |
+| CI build+test sem SonarQube | Pipeline pronto no repo (push main + PRs) | — Implemented (Phase 2) |
 
 ## Evolution
 
@@ -62,4 +67,4 @@ This document evolves at phase transitions and milestone boundaries.
 5. "What This Is" still accurate? → Update if drifted
 
 ---
-*Last updated: 2026-08-19 after initialization*
+*Last updated: 2026-08-20 after Phase 2 completion*
