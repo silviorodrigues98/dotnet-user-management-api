@@ -19,7 +19,7 @@
 
 ---
 
-## Phase 2 (Extra / Pós-MVP): Docker & Docs
+## Phase 2: Docker & Docs (Extra / Pós-MVP)
 
 **Goal:** Empacotamento (Dockerfile multi-stage + docker-compose com PostgreSQL) e documentação de arquitetura para o desafio.
 
@@ -29,6 +29,12 @@
 3. `.github/workflows/ci-cd.yml` pronto no repositório
 
 **Requirements:** (extras — executados apenas se o MVP 100% validado)
+
+**Plans:** 2 planos
+
+Plans:
+- [ ] 02-01-PLAN.md — Docker & PostgreSQL: dual-provider, Dockerfile multi-stage, compose prod-like (PostgreSQL 16), fail-fast JWT, .env/.gitignore
+- [ ] 02-02-PLAN.md — Docs & CI: ARCHITECTURE.md (Mermaid, PT-BR) e workflow CI build+test (sem SonarQube)
 
 ---
 
