@@ -8,7 +8,7 @@
     "research": false,
     "plan_check": false,
     "verifier": false,
-    "nyquist_validation": false,
+    "nyquist_validation": true,
     "auto_advance": true,
     "ai_integration_phase": true,
     "_auto_chain_active": false
