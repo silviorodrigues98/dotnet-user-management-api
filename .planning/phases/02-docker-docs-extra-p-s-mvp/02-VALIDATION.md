@@ -1,8 +1,8 @@
 ---
 phase: 02
 slug: docker-docs-extra-p-s-mvp
-status: partial
-nyquist_compliant: false
+status: compliant
+nyquist_compliant: true
 wave_0_complete: true
 created: 2026-08-20
 ---
@@ -64,10 +64,7 @@ created: 2026-08-20
 
 ## Manual-Only Verifications
 
-| Behavior | Requirement | Why Manual | Test Instructions |
-|----------|-------------|------------|-------------------|
-| Init de banco PostgreSQL (`Migrate()` com retry 10×/2s capturando `NpgsqlException`) | extras (D-02/D-07) | Requer PostgreSQL real/Docker; inviável no teste in-memory | `docker compose up --build -d` e conferir logs `[DB] PostgreSQL indisponível — tentativa n/10` durante a corrida de readiness; confirmar migrações aplicadas |
-| E2E do compose (SC-1 ROADMAP) | extras | Requer Docker daemon instalado (blocker do SUMMARY 02-01) | `cp .env.example .env` → preencher segredos (`openssl rand -hex 32`/`-hex 16`) → `docker compose up --build -d` → fluxo curl: register 201 / duplicado 201 (T-01-10) / login 200 / users 401 sem token / users 200 / `/` 200; `docker compose restart api` + login 200 (persistência); `mv .env .env.bak && docker compose config` falha citando `JWT__KEY`; `docker compose down` sem `-v` |
+[none — both items verified live via Docker compose stack at 2026-08-20]
 
 ---
 
@@ -78,6 +75,6 @@ created: 2026-08-20
 - [x] Wave 0 covers all MISSING references
 - [x] No watch-mode flags
 - [x] Feedback latency < 10s
-- [ ] `nyquist_compliant: true` set in frontmatter (2 itens manual-only pendentes de Docker — verificar em `/gsd-verify-work`)
+- [x] `nyquist_compliant: true` set in frontmatter (both manual-only items verified via Docker E2E UAT at 2026-08-20)
 
-**Approval:** pending 2026-08-20
+**Approval:** approved 2026-08-20
