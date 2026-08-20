@@ -7,20 +7,20 @@
 
 ### Authentication
 
-- [ ] **AUTH-01**: User can sign up with name, email and password
-- [ ] **AUTH-02**: User can log in with email/password and receive a JWT token
-- [ ] **AUTH-03**: Protected endpoints reject requests without a valid token (401)
+- [x] **AUTH-01**: User can sign up with name, email and password
+- [x] **AUTH-02**: User can log in with email/password and receive a JWT token
+- [x] **AUTH-03**: Protected endpoints reject requests without a valid token (401)
 
 ### Users
 
-- [ ] **USER-01**: Authenticated user can list registered users (name and email)
-- [ ] **USER-02**: Registered email is unique
+- [x] **USER-01**: Authenticated user can list registered users (name and email)
+- [x] **USER-02**: Registered email is unique
 
 ### Quality
 
-- [ ] **QUAL-01**: Passwords are stored hashed (never plaintext)
-- [ ] **QUAL-02**: API returns structured, consistent error responses
-- [ ] **QUAL-03**: Core paths covered by automated tests
+- [x] **QUAL-01**: Passwords are stored hashed (never plaintext)
+- [x] **QUAL-02**: API returns structured, consistent error responses
+- [x] **QUAL-03**: Core paths covered by automated tests
 
 ## v2 Requirements
 
@@ -43,14 +43,14 @@
 
 | Requirement | Phase | Status |
 |-------------|-------|--------|
-| AUTH-01 | Phase 1 | Pending |
-| AUTH-02 | Phase 1 | Pending |
-| AUTH-03 | Phase 1 | Pending |
-| USER-01 | Phase 1 | Pending |
-| USER-02 | Phase 1 | Pending |
-| QUAL-01 | Phase 1 | Pending |
-| QUAL-02 | Phase 1 | Pending |
-| QUAL-03 | Phase 1 | Pending |
+| AUTH-01 | Phase 1 | Complete |
+| AUTH-02 | Phase 1 | Complete |
+| AUTH-03 | Phase 1 | Complete |
+| USER-01 | Phase 1 | Complete |
+| USER-02 | Phase 1 | Complete |
+| QUAL-01 | Phase 1 | Complete |
+| QUAL-02 | Phase 1 | Complete |
+| QUAL-03 | Phase 1 | Complete |
 
 **Coverage:**
 - v1 requirements: 8 total
