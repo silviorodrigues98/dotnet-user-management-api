@@ -95,8 +95,8 @@
 
   <section class="card" id="authCard">
     <div class="tabs" role="tablist">
-      <button id="tabLogin" class="tab active" role="tab" aria-controls="loginForm" aria-selected="true" onclick="switchTab('login')">Entrar</button>
-      <button id="tabRegister" class="tab" role="tab" aria-controls="registerForm" aria-selected="false" onclick="switchTab('register')">Cadastrar</button>
+      <button id="tabLogin" class="tab active" role="tab" aria-controls="loginForm" aria-selected="true" tabindex="0" onclick="switchTab('login')" onkeydown="onTabKeydown(event, 'login')">Entrar</button>
+      <button id="tabRegister" class="tab" role="tab" aria-controls="registerForm" aria-selected="false" tabindex="-1" onclick="switchTab('register')" onkeydown="onTabKeydown(event, 'register')">Cadastrar</button>
     </div>
 
     <form id="loginForm" role="tabpanel" onsubmit="submitLogin(event)">
@@ -151,6 +151,16 @@
       document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
       document.getElementById('tabLogin').setAttribute('aria-selected', tab === 'login');
       document.getElementById('tabRegister').setAttribute('aria-selected', tab === 'register');
+      document.getElementById('tabLogin').setAttribute('tabindex', tab === 'login' ? '0' : '-1');
+      document.getElementById('tabRegister').setAttribute('tabindex', tab === 'register' ? '0' : '-1');
+    }
+
+    function onTabKeydown(event, tab) {
+      if (event.key !== 'ArrowRight' && event.key !== 'ArrowLeft') return;
+      event.preventDefault();
+      const next = tab === 'login' ? 'register' : 'login';
+      switchTab(next);
+      document.getElementById(next === 'login' ? 'tabLogin' : 'tabRegister').focus();
     }
 
     async function request(path, options) {
