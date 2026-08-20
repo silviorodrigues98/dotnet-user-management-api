@@ -2,8 +2,8 @@
 status: complete
 phase: 01-mvp-rodando
 source: .planning/phases/01-mvp-rodando/README.md (fase documentada retroativamente; sem SUMMARY)
-started: 2026-08-20T10:26:40Z
-updated: 2026-08-20T10:40:00Z
+started: 2026-08-20T11:00:00Z
+updated: 2026-08-20T11:25:00Z
 ---
 
 ## Current Test
@@ -14,85 +14,91 @@ updated: 2026-08-20T10:40:00Z
 
 ### 1. Cold Start Smoke Test
 expected: |
-  Kill any running server. Start the application from scratch with `dotnet run` (from src/DotnetUserManagementApi.Api).
-  Server boots without errors and the page at http://localhost:5290/ loads.
+  Mate qualquer servidor em execução. Inicie a aplicação do zero com `dotnet run` (a partir de src/DotnetUserManagementApi.Api).
+  O servidor sobe sem erros e a página em http://localhost:5290/ carrega com a interface "Gerenciamento de Usuários".
 result: pass
 verified: |
-  Automated via Playwright + dotnet. Fresh `dotnet run` (port 5291) booted cleanly in ~13s, SQLite initialized,
-  page http://localhost:5291/ served 200 with the "Gerenciamento de Usuários" UI.
-  Nota: um processo dotnet legado de outro UID ocupava a porta 5290 (não terminável) — o cold start foi validado em porta livre.
+  Automated: app.db removido (cold start limpo). `dotnet run --no-launch-profile` em Development (porta 5291) bootou em ~13s,
+  SQLite recriado via EnsureCreated, GET / → 200 com UI "Gerenciamento de Usuários".
+  Nota: um processo dotnet legado de outro UID ocupa a porta 5290 (não terminável) — cold start validado em porta livre.
 
 ### 2. Register a New User (web)
 expected: |
-  Open http://localhost:5290/ and click the "Cadastrar" tab. Fill in Nome, E-mail and Senha (min 8 chars),
-  click "Cadastrar". You should see a green "Conta criada! Faça login para continuar." message and the form switches back to "Entrar".
+  Abra http://localhost:5290/ e clique na aba "Cadastrar". Preencha Nome, E-mail e Senha (min 8 caracteres),
+  clique em "Cadastrar". Você deve ver a mensagem verde "Conta criada! Faça login para continuar." e o formulário volta para a aba "Entrar".
 result: pass
 verified: |
-  Automated via Playwright: filled Nome/E-mail/Senha, clicked Cadastrar → message "Conta criada! Faça login para continuar."
-  and auto-switch to the "Entrar" tab. Persistence confirmed via 409 on duplicate email.
+  Automated via Playwright: Nome "Maria UAT", maria.uat@example.com / senha12345 → POST /api/auth/register 201
+  ({"message":"Conta criada."}); formulário auto-mudou para aba "Entrar" com parágrafo "Conta criada! Faça login para continuar."
 
 ### 3. Log In (web)
 expected: |
-  On the "Entrar" tab, type the email and password just registered and click "Entrar".
-  You should land on the "Usuários cadastrados" card with a blue badge showing your logged-in email.
+  Na aba "Entrar", digite o e-mail e a senha recém-cadastrados e clique em "Entrar".
+  Você deve cair no card "Usuários cadastrados" com um badge azul mostrando seu e-mail logado.
 result: pass
 verified: |
-  Automated via Playwright: login with ana@example.com/senha12345 → "Usuários cadastrados" card shown with badge "ana@example.com".
+  Automated via Playwright: login maria.uat@example.com/senha12345 → card "Usuários cadastrados" exibido com badge "maria.uat@example.com" e botão "Sair".
 
 ### 4. List Users (web)
 expected: |
-  After login, the "Usuários cadastrados" table lists users with Nome, E-mail and Cadastrado em columns,
-  including the user you just registered.
+  Após o login, a tabela "Usuários cadastrados" lista usuários com as colunas Nome, E-mail e Cadastrado em,
+  incluindo o usuário que você acabou de cadastrar.
 result: pass
 verified: |
-  Automated via Playwright: table rendered columns Nome/E-mail/Cadastrado em and row "Ana Souza | ana@example.com | 20/08/2026, 07:32:31".
+  Automated via Playwright: tabela renderizada com cabeçalhos Nome/E-mail/Cadastrado em e linha
+  "Maria UAT | maria.uat@example.com | 20/08/2026, 10:50:38".
 
 ### 5. Register API behaviors
 expected: |
-  POST /api/auth/register: valid payload → 201 with the new user; duplicate email → 409; invalid payload → 400 (RFC 7807 problem details).
+  POST /api/auth/register: payload válido → 201 com o novo usuário; e-mail duplicado → 201 uniforme "Conta criada."
+  (anti-enumeração T-01-10 — NÃO cria linha duplicada); payload inválido → 400 (RFC 7807 problem details).
 result: pass
 verified: |
-  curl: valid → 201 + user JSON (id/name/email/createdAtUtc); duplicate ana@example.com → 409 "Já existe um usuário cadastrado com este e-mail.";
-  invalid (empty name, bad email, short password) → 400 "Nome é obrigatório."
+  Automated via curl: válido → 201 + persistido; duplicado → 201 "Conta criada." (sem linha duplicada no banco —
+  listagem GET /api/users mostra 1 único registro por e-mail); inválido (nome vazio, e-mail ruim, senha curta)
+  → 400 {"title":"Erro de Validação","status":400,"detail":"Nome é obrigatório."} RFC 7807.
 
 ### 6. Login API behaviors
 expected: |
-  POST /api/auth/login: correct credentials → 200 with a JWT token; wrong password → 401; malformed payload → 400.
+  POST /api/auth/login: credenciais corretas → 200 com token JWT; senha errada → 401; payload malformado → 400.
 result: pass
 verified: |
-  curl: correct → 200 + JWT (HS256, exp 3599s, tokenType Bearer); wrong password → 401 "E-mail ou senha inválidos.";
-  missing password → 400 validation errors.
+  Automated via curl: correto → 200 + JWT (HS256, exp 3599s, tokenType Bearer); senha errada → 401 "E-mail ou senha inválidos.";
+  payload sem senha → 400 validation errors; e-mail inexistente → 401 (mensagem uniforme, anti-enumeração).
 
 ### 7. Users endpoint protection
 expected: |
-  GET /api/users: returns 401 without a token; returns 200 with the user list when a valid Bearer token is sent.
+  GET /api/users: retorna 401 sem token; retorna 200 com a lista de usuários quando um Bearer token válido é enviado.
 result: pass
 verified: |
-  curl: no token → 401; with Bearer token from login → 200 with list of both registered users.
+  Automated via curl: sem token → 401; token inválido → 401; Bearer token válido (login) → 200 com lista de usuários.
 
 ### 8. Password stored hashed (BCrypt)
 expected: |
-  The stored password in the database is a BCrypt hash (starts with $2a$/$2b$), never the plaintext value.
+  A senha armazenada no banco é um hash BCrypt (começa com $2a$/$2b$), nunca o valor em texto puro.
 result: pass
 verified: |
-  SQLite (app.db): both users' PasswordHash are $2a$12$... (60 chars) — BCrypt work factor 12, no plaintext.
+  Automated via python3+sqlite: ambas as linhas têm PasswordHash de 60 chars com prefixo $2a$ (BCrypt work factor 12);
+  nenhum registro contém o valor em texto puro.
 
 ### 9. Automated Tests Green
 expected: |
-  `dotnet test` from the repository root completes with 12 tests passing (register 201, duplicate 409, validations 400,
-  login 200/401, users 401/200, BCrypt hashing).
+  `dotnet test` a partir da raiz do repositório completa com todos os testes passando
+  (register 201, duplicado 201 uniforme, validações 400, login 200/401, users 401/200, hashing BCrypt, rate limit).
 result: pass
 verified: |
-  dotnet test solution → Passed: 12, Failed: 0, Skipped: 0.
+  Automated via dotnet test (solution/): Passed: 16, Failed: 0, Skipped: 0 (a suíte cresceu de 12 para 16 testes
+  desde a UAT anterior — inclui anti-enumeração e rate limiting).
 
 ### 10. MVP Coverage — full loop end to end
 expected: |
-  From a fresh start a brand-new user can register, log in, and see the user list — the complete
-  cadastro → login (JWT) → listagem protegida loop works without manual DB setup or environment files.
+  A partir de um estado limpo, um usuário novo consegue cadastrar, logar e ver a lista de usuários — o loop completo
+  cadastro → login (JWT) → listagem protegida funciona sem setup manual de banco ou arquivos de ambiente.
 result: pass
 verified: |
-  Full loop exercised in a single fresh server: cadastro (web + API 201) → login (JWT) → listagem protegida (401 sem token / 200 com token)
-  → visualização na web. Banco SQLite auto-criado (EnsureCreated), Jwt:Key auto-gerada em Development. Nenhum setup manual necessário.
+  Automated: loop completo exercido em servidor único com cold start limpo (app.db removido). Cadastro web (Maria UAT)
+  + API 201 → login JWT 200 → GET /api/users 401 sem token / 200 com token → visualização web na tabela.
+  SQLite auto-criado (EnsureCreated), Jwt:Key auto-gerada em Development. Nenhum setup manual necessário.
 
 ## Summary
 
