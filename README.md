@@ -75,13 +75,23 @@ solution/
 | Clean Architecture | Separação clara de responsabilidades, testável e auditável |
 | JWT (HS256) | API stateless; o token carrega a identidade do usuário |
 | BCrypt (work factor 12) | Hash de senha com salt aleatório, resistente a brute force |
-| EF Core + SQLite | Zero configuração para rodar local; migrações prontas |
+| EF Core dual-provider (SQLite local / PostgreSQL Docker) | Zero configuração local e Postgres prod-like via chave `ConnectionStrings:Database` (D-01) |
 | Chave JWT gerada em runtime | Nenhuma chave de assinatura é versionada no repositório |
 
-## Próximos passos (fora do MVP)
+## Rodar com Docker (PostgreSQL)
+
+```bash
+# do diretório raiz do repositório
+cp .env.example .env        # e preencha JWT__KEY e POSTGRES_PASSWORD (ex.: openssl rand -hex 32 / -hex 16)
+docker compose up --build
+```
+
+A API sobe em `http://localhost:5290` com **PostgreSQL 16** em container (volume `postgres_data` para persistência) e ambiente `Production` (Swagger desligado, `JWT__KEY` obrigatória).
+
+Nesta fase também foram entregues:
 
 - Dockerfile multi-stage + `docker-compose` com PostgreSQL
-- Pipeline CI/CD (GitHub Actions) com build, testes e análise estática (SonarQube)
+- Pipeline CI (GitHub Actions) com build e testes — disparado em push para `main` e pull requests
 - Documento `ARCHITECTURE.md` com diagramas e justificativas completas
 
 Planejamento e decisões registrados em `.planning/`.

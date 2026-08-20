@@ -1,0 +1,32 @@
+# CI — build + testes (D-10/D-11)
+# Escopo: build + dotnet test apenas, sem passos de deploy —
+# o job não usa secrets do repositório (T-02-07/T-02-09).
+# Gatilhos: push para main + pull requests (D-11).
+
+name: CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout do código
+        uses: actions/checkout@v4
+
+      - name: Instalar .NET SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '8.0.x'
+
+      - name: Restaurar pacotes
+        run: dotnet restore solution/DotnetUserManagementApi.sln
+
+      - name: Build (Release)
+        run: dotnet build solution/DotnetUserManagementApi.sln --configuration Release --no-restore
+
+      - name: Testes
+        run: dotnet test solution/DotnetUserManagementApi.sln --configuration Release --no-build
