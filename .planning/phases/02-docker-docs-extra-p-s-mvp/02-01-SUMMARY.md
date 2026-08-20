@@ -127,7 +127,7 @@ Cada task foi commitada atomicamente:
 ```bash
 cp .env.example .env   # e preencher com openssl rand -hex 32 / -hex 16
 docker compose up --build -d
-# fluxo esperado: register 201 / duplicado 409 / login 200 / users 401 sem token / users 200 / / 200
+# fluxo esperado: register 201 / duplicado 201 (anti-enumeração T-01-10) / login 200 / users 401 sem token / users 200 / / 200
 docker compose restart api && <login novamente>  # persistência em postgres_data
 mv .env .env.bak && docker compose config   # deve falhar citando JWT__KEY
 mv .env.bak .env && docker compose config --quiet   # volta a passar

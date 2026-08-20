@@ -67,10 +67,11 @@ blocked: 0
 ## Gaps
 
 - truth: "SUMMARY 02-01 E2E block documents 'duplicado 409' for duplicate registration, but implemented behavior is uniform 201 (anti-enumeração T-01-10) — documentation is stale"
-  status: failed
+  status: resolved
   reason: "UAT found duplicate register returns 201 'Conta criada.'; UserService.cs:36-38 confirms T-01-10 anti-enumeration is intentional design. Docs (SUMMARY/PLAN E2E flow) should say 201, not 409."
   severity: minor
   test: 3
+  resolution: "Fixed directly on 2026-08-20: updated 02-01-PLAN.md (3 lines), 02-01-SUMMARY.md, and 02-SECURITY.md to reflect uniform 201 (anti-enumeração T-01-10)."
   artifacts:
     - path: ".planning/phases/02-docker-docs-extra-p-s-mvp/02-01-SUMMARY.md"
       issue: "E2E flow documents 'duplicado 409' but design returns uniform 201"
