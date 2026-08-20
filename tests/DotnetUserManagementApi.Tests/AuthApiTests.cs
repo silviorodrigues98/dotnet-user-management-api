@@ -16,24 +16,24 @@ public sealed class AuthApiTests
         var response = await client.PostAsJsonAsync("/api/auth/register", new RegisterUserRequest("Ana Souza", "ana@example.com", "senha12345"));
 
         Assert.Equal(HttpStatusCode.Created, response.StatusCode);
-        var user = await response.Content.ReadFromJsonAsync<UserDto>();
-        Assert.NotNull(user);
-        Assert.Equal("Ana Souza", user.Name);
-        Assert.Equal("ana@example.com", user.Email);
-        Assert.DoesNotContain("passwordHash", await response.Content.ReadAsStringAsync(), StringComparison.OrdinalIgnoreCase);
+        var result = await response.Content.ReadFromJsonAsync<RegisterResponse>();
+        Assert.NotNull(result);
+        Assert.False(string.IsNullOrWhiteSpace(result.Message));
     }
 
     [Fact]
-    public async Task Register_DuplicateEmail_ReturnsConflict()
+    public async Task Register_DuplicateEmail_ReturnsCreatedUniform()
     {
         await using var factory = new TestWebAppFactory();
         using var client = factory.CreateClient();
         var request = new RegisterUserRequest("Ana Souza", "ana@example.com", "senha12345");
 
-        await client.PostAsJsonAsync("/api/auth/register", request);
-        var response = await client.PostAsJsonAsync("/api/auth/register", request);
+        var first = await client.PostAsJsonAsync("/api/auth/register", request);
+        var second = await client.PostAsJsonAsync("/api/auth/register", request);
 
-        Assert.Equal(HttpStatusCode.Conflict, response.StatusCode);
+        // T-01-10 anti-enumeração: resposta uniforme (201) mesmo para e-mail já existente.
+        Assert.Equal(HttpStatusCode.Created, first.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, second.StatusCode);
     }
 
     [Fact]
@@ -85,6 +85,23 @@ public sealed class AuthApiTests
         var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest("ana@example.com", "senha-errada"));
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task Login_RepeatedFailures_ReturnsTooManyRequests()
+    {
+        await using var factory = new TestWebAppFactory();
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/auth/register", new RegisterUserRequest("Ana Souza", "ana@example.com", "senha12345"));
+
+        for (var i = 0; i < 5; i++)
+        {
+            await client.PostAsJsonAsync("/api/auth/login", new LoginRequest("ana@example.com", "senha-errada"));
+        }
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest("ana@example.com", "senha-errada"));
+
+        Assert.Equal(HttpStatusCode.TooManyRequests, response.StatusCode);
     }
 
     [Fact]

@@ -5,6 +5,7 @@ using DotnetUserManagementApi.Infrastructure.Security;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Options;
 using Npgsql.EntityFrameworkCore.PostgreSQL;
 
 namespace DotnetUserManagementApi.Infrastructure;
@@ -31,6 +32,14 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IPasswordHasher, BcryptPasswordHasher>();
         services.AddSingleton<ITokenService, JwtTokenService>();
+
+        services.Configure<LoginThrottleOptions>(options =>
+            {
+                var section = configuration.GetSection(LoginThrottleOptions.SectionName);
+                options.MaxFailedAttempts = section.GetValue<int?>("MaxFailedAttempts") ?? options.MaxFailedAttempts;
+                options.WindowMinutes = section.GetValue<int?>("WindowMinutes") ?? options.WindowMinutes;
+            });
+        services.AddSingleton<ILoginThrottle, InMemoryLoginThrottle>();
 
         return services;
     }

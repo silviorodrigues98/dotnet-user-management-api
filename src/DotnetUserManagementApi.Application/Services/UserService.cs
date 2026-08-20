@@ -4,21 +4,26 @@ using DotnetUserManagementApi.Application.Exceptions;
 using DotnetUserManagementApi.Domain.Entities;
 using DotnetUserManagementApi.Domain.Exceptions;
 using DotnetUserManagementApi.Domain.ValueObjects;
+using Microsoft.Extensions.Logging;
 
 namespace DotnetUserManagementApi.Application.Services;
 
 public interface IUserService
 {
-    Task<UserDto> RegisterAsync(RegisterUserRequest request, CancellationToken cancellationToken = default);
+    Task<RegisterResponse> RegisterAsync(RegisterUserRequest request, CancellationToken cancellationToken = default);
 
     Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default);
 
     Task<IReadOnlyList<UserDto>> GetAllAsync(CancellationToken cancellationToken = default);
 }
 
-public sealed class UserService(IUserRepository repository, IPasswordHasher passwordHasher, ITokenService tokenService) : IUserService
+public sealed class UserService(
+    IUserRepository repository,
+    IPasswordHasher passwordHasher,
+    ITokenService tokenService,
+    ILogger<UserService> logger) : IUserService
 {
-    public async Task<UserDto> RegisterAsync(RegisterUserRequest request, CancellationToken cancellationToken = default)
+    public async Task<RegisterResponse> RegisterAsync(RegisterUserRequest request, CancellationToken cancellationToken = default)
     {
         ValidateRegistration(request);
 
@@ -27,7 +32,9 @@ public sealed class UserService(IUserRepository repository, IPasswordHasher pass
         var existing = await repository.GetByEmailAsync(email.Value, cancellationToken);
         if (existing is not null)
         {
-            throw new ConflictException("Já existe um usuário cadastrado com este e-mail.");
+            // T-01-10: anti-enumeração — resposta uniforme (201) independente de o e-mail já existir.
+            logger.LogInformation("Registration attempt for existing email {Email}", email.Value);
+            return new RegisterResponse("Conta criada.");
         }
 
         var user = new User(
@@ -38,7 +45,8 @@ public sealed class UserService(IUserRepository repository, IPasswordHasher pass
         await repository.AddAsync(user, cancellationToken);
         await repository.SaveChangesAsync(cancellationToken);
 
-        return ToDto(user);
+        logger.LogInformation("User registered {Email} ({UserId})", email.Value, user.Id);
+        return new RegisterResponse("Conta criada.");
     }
 
     public async Task<LoginResponse> LoginAsync(LoginRequest request, CancellationToken cancellationToken = default)
@@ -50,9 +58,11 @@ public sealed class UserService(IUserRepository repository, IPasswordHasher pass
 
         if (!passwordHasher.Verify(request.Password, user.PasswordHash))
         {
+            logger.LogWarning("Failed login attempt for {Email}", email.Value);
             throw new InvalidCredentialsException("E-mail ou senha inválidos.");
         }
 
+        logger.LogInformation("User logged in {Email} ({UserId})", email.Value, user.Id);
         var token = tokenService.CreateToken(user);
 
         return new LoginResponse(token.Value, "Bearer", token.ExpiresInSeconds, ToDto(user));
