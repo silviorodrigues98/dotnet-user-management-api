@@ -33,6 +33,13 @@ if (string.IsNullOrWhiteSpace(jwtOptions.Key))
         throw new InvalidOperationException("JWT__KEY (Jwt:Key) é obrigatório em produção. Defina a variável de ambiente JWT__KEY antes de iniciar a API.");
     }
 }
+else if (!builder.Environment.IsDevelopment()
+         && (jwtOptions.Key.Contains("changeme", StringComparison.OrdinalIgnoreCase)
+             || Encoding.UTF8.GetByteCount(jwtOptions.Key) < 32))
+{
+    // D-08 fail-fast real: rejeita o placeholder versionado (.env.example) e chaves fracas
+    throw new InvalidOperationException("JWT__KEY (Jwt:Key) deve ter ao menos 32 bytes e não pode ser o valor de exemplo do .env.example.");
+}
 
 builder.Services.Configure<JwtOptions>(jwtSection);
 builder.Services.PostConfigure<JwtOptions>(options =>
