@@ -1,104 +1,106 @@
 ---
 gsd_state_version: 1.0
 milestone: v1.0
-milestone_name: milestone
-status: Awaiting next milestone
-stopped_at: Completed 02-02-PLAN.md
-last_updated: "2026-08-20T16:24:44.396Z"
-last_activity: 2026-08-20 — Milestone v1.0 completed and archived
+milestone_name: MVP
+status: Shipped
+stopped_at: Milestone v1.0 archived
+last_updated: "2026-08-20T16:45:00Z"
+last_activity: 2026-08-20 — Milestone v1.0 archived and shipped
 progress:
   total_phases: 2
   completed_phases: 2
   total_plans: 4
   completed_plans: 4
   percent: 100
-current_phase: 2
-current_phase_name: Docker & Docs
+current_phase: null
+current_phase_name: null
 ---
 
 # Project State
 
 ## Project Reference
 
-See: .planning/PROJECT.md (updated 2026-08-19)
+See: .planning/PROJECT.md (updated 2026-08-20 after v1.0 milestone)
 
-**Core value:** O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT.
-**Current focus:** Phase 01 — mvp-rodando
+**Core value:** O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT, localmente (SQLite, zero dependências) ou via Docker (PostgreSQL 16).
+
+**Current focus:** Planning next milestone
 
 ## Current Position
 
-Phase: Milestone v1.0 complete
+Phase: Milestone v1.0 complete (shipped)
 Plan: —
-Status: Awaiting next milestone
-Last activity: 2026-08-20 — Milestone v1.0 completed and archived
+Status: Shipped — planning next milestone
+Last activity: 2026-08-20 — Milestone v1.0 archived and shipped
 
 ## Performance Metrics
 
 **Velocity:**
 
-- Total plans completed: 8
-- Average duration: 6 min
-- Total execution time: 0.2 hours
+- Total plans completed: 4
+- Total phases: 2
+- Total execution: ~7h across 3+ sessions
+- Average plan duration: 7.5 min
 
 **By Phase:**
 
-| Phase | Plans | Total | Avg/Plan |
-|-------|-------|-------|----------|
-| 1 — MVP Rodando | 1 | 1 | - |
-| 2 — Docker & Docs | 2 | 2 | 6 min |
-| 02 | 2 | - | - |
-| 01 | 2 | - | - |
+| Phase | Plans | Duration | Commits |
+|-------|-------|----------|---------|
+| 1 — MVP Rodando | 2 | 18 min | 2+ |
+| 2 — Docker & Docs | 2 | 12 min | 4 |
 
-**Recent Trend:**
-
-- Last 5 plans: 8 min, 4 min
-- Trend: Stable
-
-*Updated after each plan completion*
-| Phase 02 P1 | 8min | 3 tasks | 9 files |
-| Phase 02 P02 | 4min | 2 tasks | 3 files |
+**Timeline:** 2026-08-19 to 2026-08-20 (2 days)
 
 ## Accumulated Context
 
 ### Decisions
 
-Decisions are logged in PROJECT.md Key Decisions table.
-Recent decisions affecting current work:
+All key decisions logged in PROJECT.md Key Decisions table. Milestone v1.0 decisions:
 
-- [Phase 2]: Npgsql.EntityFrameworkCore.PostgreSQL pinado em 8.0.11 (8.0.21 não existe no NuGet — maior 8.0.x disponível)
+- [Phase 1]: WebApi (Program.cs) → Infrastructure (DependencyInjection) for EF Core registration — isolates provider choices
+- [Phase 1]: Rate limiting pre-login: 5 attempts / 10s sliding window with 429 RFC 7807 response
+- [Phase 1]: Anti-enumeration (T-01-10): duplicate email → uniform 201 "Conta criada." instead of 409
+- [Phase 2]: Npgsql.EntityFrameworkCore.PostgreSQL pinado em 8.0.11 (8.0.21 não existe no NuGet)
 - [Phase 2]: Base image final aspnet:8.0-alpine (InvariantGlobalization=true dispensa libicu)
 - [Phase 2]: db do compose sem porta publicada — PostgreSQL só na rede interna (T-02-04)
-- [Phase 2]: Fail-fast de Jwt:Key em produção (Program.cs + ${JWT__KEY:?} no compose)
-- [Phase 02]: Workflow CI sem nenhum ${{ secrets.* }} — build+test não manipulam segredos (T-02-07/T-02-09)
-- [Phase 02]: Nomes de step do workflow em PT-BR, consistente com D-12 (docs em português)
-- [Phase 02]: Comentário do workflow evita a palavra 'SonarQube' para satisfazer o critério estrito grep -c = 0 (D-10)
-- [Phase 02]: README — seção 'Próximos passos' substituída por 'Rodar com Docker (PostgreSQL)' — marca a fase como entregue
+- [Phase 2]: Fail-fast Jwt:Key em produção (Program.cs + ${JWT__KEY:?} no compose)
+- [Phase 02]: Workflow CI sem nenhum ${{ secrets.* }} — build+test não manipulam segredos
+- [Phase 02]: Nomes de step do workflow em PT-BR, consistente com docs em português
+- [Phase 02]: Comentário do workflow evita a palavra 'SonarQube'
+- [Phase 02]: README — seção 'Próximos passos' substituída por 'Rodar com Docker (PostgreSQL)'
 
 ### Pending Todos
 
-None yet.
+None — milestone complete.
 
-### Blockers/Concerns
+### Tech Debt (10 items)
 
-- Nenhum — Docker instalado (29.7.2) e E2E do compose verificado em UAT (11/11) em 2026-08-20
+| # | Item | Severity |
+|---|------|----------|
+| 1 | JwtBearer 401 empty body (RFC 7807 inconsistency) | warning |
+| 2 | Concurrent duplicate race → 500 (UserService.cs:32-33) | warning |
+| 3 | README `dotnet test` path broken from repo root | warning |
+| 4 | README line 55 claims 409 (current: uniform 201) | low |
+| 5 | 02-01-SUMMARY.md stale Docker-absent claims | low |
+| 6 | Migration snapshot drift after ValueConverter fix | warning |
+| 7 | ConflictException dead code | low |
+| 8 | launchSettings.json launchUrl leftover | low |
+| 9 | POSTGRES_PASSWORD=changeme placeholder | low |
+| 10 | api service lacks compose healthcheck | low |
 
 ## Deferred Items
 
-Items acknowledged and carried forward from previous milestone close:
-
-| Category | Item | Status | Deferred At |
-|----------|------|--------|-------------|
-| *(none)* | | | |
+None — audit passed clean at milestone close.
 
 ## Session Continuity
 
-Last session: 2026-08-20T01:49:55.155Z
-Stopped at: Completed 02-02-PLAN.md
-Resume file: None
+Last session: 2026-08-20T16:45:00Z
+Stopped at: Milestone v1.0 archived and shipped
+Resume: Start next milestone via `/gsd-new-milestone`
 
 ---
-*Last updated: 2026-08-20 after 02-02 complete*
+*Last updated: 2026-08-20 after v1.0 milestone close and archive*
 
 ## Operator Next Steps
 
-- Start the next milestone with /gsd-new-milestone
+- Start the next milestone with `/gsd-new-milestone`
