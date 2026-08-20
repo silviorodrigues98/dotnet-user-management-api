@@ -8,7 +8,7 @@ API de gerenciamento de usuários em .NET 8 (Clean Architecture) com cadastro, l
 
 O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT.
 
-**Current State:** Phase 1 complete — MVP rodando com UI auditada e corrigida (3 blockers + polish a11y resolvidos via gap closure).
+**Current State:** Phase 2 complete — Docker + docs + CI entregues e verificados (UAT 11/11, 46 testes verdes, E2E do compose validado com Docker 29.7.2).
 
 ### Validated
 
@@ -16,6 +16,9 @@ O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com
 - [x] **AUTH-02**: User can log in with email/password and receive a JWT — Validated in Phase 1
 - [x] **USER-01**: Authenticated user can list registered users — Validated in Phase 1
 - [x] **QUAL-01**: Password hashing and error handling follow best practices — Validated in Phase 1
+- [x] **Containerização** — Dockerfile multi-stage + docker-compose prod-like (PostgreSQL 16) — Validated in Phase 2
+- [x] **CI/CD pipeline** — build + `dotnet test` (push main + PRs, sem SonarQube) — Validated in Phase 2
+- [x] **ARCHITECTURE.md** — entregável do desafio (Mermaid, PT-BR) — Validated in Phase 2
 
 ### Active
 
@@ -23,8 +26,6 @@ O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com
 
 ### Out of Scope
 
-- CI/CD execution — config pronta no repo, execução posterior
-- Containerização — Dockerfile/Compose como extra depois do MVP funcionar
 - Email de verificação / reset de senha — não exigidos no escopo básico
 - OAuth / 2FA — fora do escopo
 - Frontend framework — tela simples HTML estática
@@ -68,4 +69,4 @@ This document evolves at phase transitions and milestone boundaries.
 5. "What This Is" still accurate? → Update if drifted
 
 ---
-*Last updated: 2026-08-20 after Phase 1 gap closure*
+*Last updated: 2026-08-20 after Phase 2 complete (Docker E2E verified)*
