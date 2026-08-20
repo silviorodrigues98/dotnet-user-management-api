@@ -13,6 +13,10 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
         {
             entity.HasKey(u => u.Id);
 
+            entity.Property(u => u.Id)
+                .HasColumnType("TEXT")
+                .HasConversion(v => v.ToString(), v => Guid.Parse(v));
+
             entity.Property(u => u.Name)
                 .HasMaxLength(User.MaxNameLength)
                 .IsRequired();
@@ -27,7 +31,12 @@ public sealed class AppDbContext(DbContextOptions<AppDbContext> options) : DbCon
                 .HasMaxLength(256)
                 .IsRequired();
 
-            entity.Property(u => u.CreatedAtUtc).IsRequired();
+            entity.Property(u => u.CreatedAtUtc)
+                .HasColumnType("TEXT")
+                .HasConversion(
+                    v => v.ToString("o"),
+                    v => DateTime.Parse(v, System.Globalization.CultureInfo.InvariantCulture,
+                        System.Globalization.DateTimeStyles.RoundtripKind));
         });
     }
 }
