@@ -24,4 +24,6 @@ FROM mcr.microsoft.com/dotnet/aspnet:8.0-alpine AS final
 WORKDIR /app
 COPY --from=build /app/publish .
 EXPOSE 8080
+# T-02-08: processo não-root — usa o usuário 'app' (UID 1654, APP_UID) que a imagem aspnet já define
+USER $APP_UID
 ENTRYPOINT ["dotnet", "DotnetUserManagementApi.Api.dll"]
