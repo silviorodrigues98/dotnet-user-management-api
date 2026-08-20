@@ -48,7 +48,8 @@ O `02-02-SUMMARY.md` declara explicitamente nenhum novo surface além do threat_
 
 ## Verification Notes
 
-- **E2E do compose (human blocker, não é gap de mitigação):** Docker não está instalado neste ambiente; o fluxo E2E (`docker compose up --build`, curl vs Postgres, persistência, fail-fast do compose) permanece pendente de verificação humana. Todas as mitigações de ameaça são **artefato-level** e foram verificadas no conteúdo dos arquivos (greps + leitura integral). A prova do fail-fast do `Program.cs` foi executada em produção simulada sem `JWT__KEY` (exit 134 com a mensagem esperada, conforme 02-01-SUMMARY.md).
+- **E2E do compose (validado em 2026-08-20):** Docker Engine 29.7.2 + Compose v5.5.0 instalados no WSL2. `docker compose up --build` sobe API + PostgreSQL 16 com healthcheck; fluxo E2E validado: register 201 (e 409 duplicado), login 200 com JWT, GET /api/users 401 sem token e 200 com token. Persistência confirmada no volume `postgres_data` (usuário sobreviveu a rebuild do container da API).
+- **Gap descoberto e fechado no E2E:** a migração SQLite existente cria `Id`/`CreatedAtUtc` como `TEXT`, e o Npgsql falhava ao ler `text` como `System.Guid` (InvalidCastException no login). Corrigido aplicando `.HasColumnType("TEXT")` + `HasConversion` (Guid/DateTime → string) no `AppDbContext.cs` — contingência prevista no PLAN 02-01. Commit `7c6c8dc`. 12 testes locais (SQLite) permanecem verdes.
 - Working tree limpo no momento da auditoria; os fixes CR-01 (`fd8274a`), WR-01 (`87db56f`), WR-02 (`0b1c795`), WR-03 (`5efb737`) estão presentes nos arquivos verificados.
 - Correlação de código-review: CR-01, WR-01, WR-02, WR-03 verificados fechados nos artefatos; as findings IN-01..IN-05 (info) não integram o threat_model e ficam fora do escopo desta auditoria.
 
