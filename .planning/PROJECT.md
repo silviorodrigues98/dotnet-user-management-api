@@ -4,6 +4,20 @@
 
 API de gerenciamento de usuários em .NET 8 (Clean Architecture) com cadastro, login seguro (JWT + BCrypt), listagem de usuários em endpoint protegido, containerização Docker (PostgreSQL 16), pipeline CI e documentação de arquitetura (ARCHITECTURE.md com Mermaid). MVP shipped v1.0.
 
+## Requirements
+
+- [x] AUTH-01: Sign up with name, email and password — v1.0
+- [x] AUTH-02: Log in and receive JWT — v1.0
+- [x] AUTH-03: Protected endpoints reject invalid token (401) — v1.0
+- [x] USER-01: Authenticated user lists registered users — v1.0
+- [x] USER-02: Registered email is unique — v1.0
+- [x] QUAL-01: Passwords stored hashed (BCrypt, never plaintext) — v1.0
+- [x] QUAL-02: API returns structured RFC 7807 error responses — v1.0
+- [x] QUAL-03: Core paths covered by automated tests — v1.0
+- [x] Containerização: Dockerfile multi-stage + compose prod-like (PostgreSQL 16) — v1.0
+- [x] CI/CD pipeline: build + `dotnet test` (push main + PRs) — v1.0
+- [x] ARCHITECTURE.md: entregável do desafio (Mermaid, PT-BR, 4 diagramas) — v1.0
+
 ## Core Value
 
 O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT, localmente (SQLite, zero dependências) ou via Docker (PostgreSQL 16).
