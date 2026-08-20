@@ -2,6 +2,10 @@ using System.Net;
 using System.Net.Http.Headers;
 using System.Net.Http.Json;
 using DotnetUserManagementApi.Application.Dtos;
+using DotnetUserManagementApi.Infrastructure.Persistence;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace DotnetUserManagementApi.Tests;
 
@@ -34,6 +38,27 @@ public sealed class AuthApiTests
         // T-01-10 anti-enumeração: resposta uniforme (201) mesmo para e-mail já existente.
         Assert.Equal(HttpStatusCode.Created, first.StatusCode);
         Assert.Equal(HttpStatusCode.Created, second.StatusCode);
+    }
+
+    [Fact]
+    public async Task Register_DuplicateEmail_PersistsOnlyOneUserRow()
+    {
+        await using var factory = new TestWebAppFactory();
+        using var client = factory.CreateClient();
+        var request = new RegisterUserRequest("Ana Souza", "ana@example.com", "senha12345");
+
+        var first = await client.PostAsJsonAsync("/api/auth/register", request);
+        var second = await client.PostAsJsonAsync("/api/auth/register", request);
+
+        // T-01-10: a resposta é uniforme (201), mas a base não pode conter e-mails duplicados.
+        Assert.Equal(HttpStatusCode.Created, first.StatusCode);
+        Assert.Equal(HttpStatusCode.Created, second.StatusCode);
+
+        using var scope = factory.Services.CreateScope();
+        var dbContext = scope.ServiceProvider.GetRequiredService<AppDbContext>();
+        var rows = await dbContext.Users.CountAsync(u => u.Email == "ana@example.com");
+
+        Assert.Equal(1, rows);
     }
 
     [Fact]
@@ -85,6 +110,41 @@ public sealed class AuthApiTests
         var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest("ana@example.com", "senha-errada"));
 
         Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+    }
+
+    [Fact]
+    public async Task ValidationError_ReturnsRfc7807ProblemDetails()
+    {
+        await using var factory = new TestWebAppFactory();
+        using var client = factory.CreateClient();
+
+        var response = await client.PostAsJsonAsync("/api/auth/register", new RegisterUserRequest("Ana Souza", "ana@example.com", "curta"));
+
+        Assert.Equal(HttpStatusCode.BadRequest, response.StatusCode);
+        Assert.StartsWith("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        Assert.NotNull(problem);
+        Assert.Equal(400, problem.Status);
+        Assert.False(string.IsNullOrWhiteSpace(problem.Title));
+        Assert.False(string.IsNullOrWhiteSpace(problem.Detail));
+    }
+
+    [Fact]
+    public async Task InvalidCredentials_ReturnsRfc7807ProblemDetails()
+    {
+        await using var factory = new TestWebAppFactory();
+        using var client = factory.CreateClient();
+        await client.PostAsJsonAsync("/api/auth/register", new RegisterUserRequest("Ana Souza", "ana@example.com", "senha12345"));
+
+        var response = await client.PostAsJsonAsync("/api/auth/login", new LoginRequest("ana@example.com", "senha-errada"));
+
+        Assert.Equal(HttpStatusCode.Unauthorized, response.StatusCode);
+        Assert.StartsWith("application/problem+json", response.Content.Headers.ContentType?.MediaType);
+        var problem = await response.Content.ReadFromJsonAsync<ProblemDetails>();
+        Assert.NotNull(problem);
+        Assert.Equal(401, problem.Status);
+        Assert.False(string.IsNullOrWhiteSpace(problem.Title));
+        Assert.False(string.IsNullOrWhiteSpace(problem.Detail));
     }
 
     [Fact]

@@ -35,13 +35,12 @@ public sealed class ExceptionHandlingMiddleware(RequestDelegate next, ILogger<Ex
     private static async Task WriteProblemAsync(HttpContext context, int statusCode, string title, string detail)
     {
         context.Response.StatusCode = statusCode;
-        context.Response.ContentType = "application/problem+json";
 
         await context.Response.WriteAsJsonAsync(new ProblemDetails
         {
             Status = statusCode,
             Title = title,
             Detail = detail,
-        }, new JsonSerializerOptions(JsonSerializerDefaults.Web));
+        }, new JsonSerializerOptions(JsonSerializerDefaults.Web), "application/problem+json");
     }
 }
