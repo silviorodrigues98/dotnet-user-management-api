@@ -5,6 +5,10 @@
 
 name: CI
 
+# T-02-09: o job só lê o repositório — GITHUB_TOKEN com escopo mínimo (sem write em contents)
+permissions:
+  contents: read
+
 on:
   push:
     branches: [main]
