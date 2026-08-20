@@ -105,7 +105,7 @@
       <label for="loginPassword">Senha</label>
       <input id="loginPassword" type="password" required minlength="8" placeholder="••••••••" oninput="clearMessage('loginMessage')" />
       <button class="primary" type="submit">Entrar</button>
-      <p id="loginMessage" class="message"></p>
+      <p id="loginMessage" class="message" role="status" aria-live="polite"></p>
     </form>
 
     <form id="registerForm" class="hidden" role="tabpanel" onsubmit="submitRegister(event)">
@@ -116,7 +116,7 @@
       <label for="regPassword">Senha (mín. 8 caracteres)</label>
       <input id="regPassword" type="password" required minlength="8" placeholder="••••••••" oninput="clearMessage('registerMessage')" />
       <button class="primary" type="submit">Cadastrar</button>
-      <p id="registerMessage" class="message"></p>
+      <p id="registerMessage" class="message" role="status" aria-live="polite"></p>
     </form>
   </section>
 
@@ -132,7 +132,7 @@
       </thead>
       <tbody id="usersBody"></tbody>
     </table>
-    <p id="usersMessage" class="message"></p>
+    <p id="usersMessage" class="message" role="status" aria-live="polite"></p>
   </section>
 
   <script>
