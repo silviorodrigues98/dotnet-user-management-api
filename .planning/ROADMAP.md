@@ -19,9 +19,13 @@
 **Mode:** mvp
 
 **Plans:** 2 plans (gap closure from UI audit)
-
 Plans:
+**Wave 1**
+
 - [ ] 01-01-PLAN.md — Blocker fixes: real error messages, visible register success, no mobile overflow
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 01-02-PLAN.md — A11y & polish: tab ARIA, focus-visible, font/contrast, empty state, disabled submit, title
 
 ---
