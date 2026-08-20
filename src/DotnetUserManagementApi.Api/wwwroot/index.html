@@ -213,6 +213,8 @@
         });
         state.token = data.token;
         state.email = data.user.email;
+        message.className = 'message';
+        message.textContent = '';
         showUsers();
       } catch (error) {
         message.className = 'message error';
@@ -268,6 +270,9 @@
     function logout() {
       state.token = null;
       state.email = null;
+      const loginMsg = document.getElementById('loginMessage');
+      loginMsg.className = 'message';
+      loginMsg.textContent = '';
       document.getElementById('usersCard').classList.add('hidden');
       document.getElementById('authCard').classList.remove('hidden');
       switchTab('login');
