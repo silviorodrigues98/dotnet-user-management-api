@@ -8,7 +8,7 @@ API de gerenciamento de usuários em .NET 8 (Clean Architecture) com cadastro, l
 
 O app precisa rodar: cadastro, login e listagem funcionando de ponta a ponta com autenticação JWT.
 
-## Requirements
+**Current State:** Phase 1 complete — MVP rodando com UI auditada e corrigida (3 blockers + polish a11y resolvidos via gap closure).
 
 ### Validated
 
@@ -54,6 +54,7 @@ Desafio técnico de empresa de desenvolvimento (.NET). Ambiente WSL2 Ubuntu 26.0
 | Docker compose prod-like | postgres:16 + volume + healthcheck, API non-root na porta 5290:8080 | — Implemented (Phase 2) |
 | ARCHITECTURE.md (Mermaid, PT-BR) | Entregável do desafio | — Implemented (Phase 2) |
 | CI build+test sem SonarQube | Pipeline pronto no repo (push main + PRs) | — Implemented (Phase 2) |
+| UI single-file sem innerHTML | Sem XSS (textContent-only) — confirmado em code review | — Implemented (Phase 1) |
 
 ## Evolution
 
@@ -67,4 +68,4 @@ This document evolves at phase transitions and milestone boundaries.
 5. "What This Is" still accurate? → Update if drifted
 
 ---
-*Last updated: 2026-08-20 after Phase 2 completion*
+*Last updated: 2026-08-20 after Phase 1 gap closure*
