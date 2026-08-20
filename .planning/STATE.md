@@ -30,5 +30,11 @@ See: .planning/PROJECT.md (updated 2026-08-19)
 
 - Phase 2 (extra): Dockerfile multi-stage, docker-compose com PostgreSQL, ARCHITECTURE.md e CI/CD
 
+## Session Continuity
+
+Last session: 2026-08-19 (resume)
+Stopped at: Session resumed, proceeding to discuss-phase 2
+Resume file: none
+
 ---
 *Last updated: 2026-08-19 after Phase 1 complete*
