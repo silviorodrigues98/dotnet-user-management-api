@@ -164,9 +164,21 @@
     }
 
     async function request(path, options) {
-      const res = await fetch(path, options);
+      let res;
+      try {
+        res = await fetch(path, options);
+      } catch {
+        throw new Error('Servidor indisponível. Verifique sua conexão e tente novamente.');
+      }
       const isJson = res.headers.get('content-type')?.includes('json');
-      const body = isJson ? await res.json() : null;
+      let body = null;
+      if (isJson) {
+        try {
+          body = await res.json();
+        } catch {
+          throw new Error('Resposta inválida do servidor. Tente novamente.');
+        }
+      }
       if (!res.ok) {
         const detail = body?.detail || (body?.errors ? Object.values(body.errors).flat().join(' ') : 'Erro inesperado.');
         throw new Error(detail);
