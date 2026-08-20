@@ -8,6 +8,7 @@
 **Goal:** API .NET 8 rodando com cadastro, login (JWT + BCrypt) e listagem protegida, com testes e documentação básica.
 
 **Success Criteria:**
+
 1. `dotnet run` inicia a API; `POST /api/auth/register` cria usuário
 2. `POST /api/auth/login` retorna JWT válido
 3. `GET /api/users` retorna 401 sem token e 200 com token
@@ -24,6 +25,7 @@
 **Goal:** Empacotamento (Dockerfile multi-stage + docker-compose com PostgreSQL) e documentação de arquitetura para o desafio.
 
 **Success Criteria:**
+
 1. `docker compose up --build` sobe API + PostgreSQL com um comando
 2. `ARCHITECTURE.md` documenta camadas, fluxo de autenticação e decisões
 3. `.github/workflows/ci-cd.yml` pronto no repositório
@@ -33,7 +35,12 @@
 **Plans:** 2 planos
 
 Plans:
+**Wave 1**
+
 - [ ] 02-01-PLAN.md — Docker & PostgreSQL: dual-provider, Dockerfile multi-stage, compose prod-like (PostgreSQL 16), fail-fast JWT, .env/.gitignore
+
+**Wave 2** *(blocked on Wave 1 completion)*
+
 - [ ] 02-02-PLAN.md — Docs & CI: ARCHITECTURE.md (Mermaid, PT-BR) e workflow CI build+test (sem SonarQube)
 
 ---
