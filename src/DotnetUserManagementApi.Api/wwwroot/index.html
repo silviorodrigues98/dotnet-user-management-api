@@ -172,9 +172,12 @@
             password: document.getElementById('regPassword').value
           })
         });
-        message.className = 'message success';
-        message.textContent = 'Conta criada! Faça login para continuar.';
         switchTab('login');
+        const loginMessage = document.getElementById('loginMessage');
+        loginMessage.className = 'message success';
+        loginMessage.textContent = 'Conta criada! Faça login para continuar.';
+        message.className = 'message';
+        message.textContent = '';
       } catch (error) {
         message.className = 'message error';
         message.textContent = error.message;
