@@ -2,8 +2,8 @@
 status: complete
 phase: 02-docker-docs-extra-p-s-mvp
 source: 02-01-SUMMARY.md, 02-02-SUMMARY.md
-started: 2026-08-20T15:17:06Z
-updated: 2026-08-20T15:33:00Z
+started: 2026-08-20T15:51:41Z
+updated: 2026-08-20T15:57:00Z
 ---
 
 ## Current Test
@@ -23,7 +23,8 @@ result: pass
 ### 3. Docker E2E Flow
 expected: Against http://localhost:5290: POST register → 201; duplicate register → 201 (anti-enumeração T-01-10 — resposta uniforme, não 409); POST login → 200 with token; GET /api/users without token → 401; GET /api/users with token → 200; GET / → 200.
 result: pass
-note: "Duplicate returned 201 'Conta criada.' — expected 409 per SUMMARY E2E block, but code comment confirms T-01-10 anti-enumeration (uniform 201) is intentional design. SUMMARY/PLAN documentation is stale; no code defect."
+
+### 4. Persistence
 expected: `docker compose restart api` (PostgreSQL persists in postgres_data volume). Logging in again with the same user works and the registered user is still listed — data survived the restart.
 result: pass
 
@@ -62,18 +63,7 @@ passed: 11
 issues: 0
 pending: 0
 skipped: 0
-blocked: 0
 
 ## Gaps
 
-- truth: "SUMMARY 02-01 E2E block documents 'duplicado 409' for duplicate registration, but implemented behavior is uniform 201 (anti-enumeração T-01-10) — documentation is stale"
-  status: resolved
-  reason: "UAT found duplicate register returns 201 'Conta criada.'; UserService.cs:36-38 confirms T-01-10 anti-enumeration is intentional design. Docs (SUMMARY/PLAN E2E flow) should say 201, not 409."
-  severity: minor
-  test: 3
-  resolution: "Fixed directly on 2026-08-20: updated 02-01-PLAN.md (3 lines), 02-01-SUMMARY.md, and 02-SECURITY.md to reflect uniform 201 (anti-enumeração T-01-10)."
-  artifacts:
-    - path: ".planning/phases/02-docker-docs-extra-p-s-mvp/02-01-SUMMARY.md"
-      issue: "E2E flow documents 'duplicado 409' but design returns uniform 201"
-  missing:
-    - "Update SUMMARY/PLAN E2E documentation to reflect uniform 201 (T-01-10 anti-enumeration)"
+[none yet]
