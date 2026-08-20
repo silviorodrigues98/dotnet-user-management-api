@@ -32,12 +32,12 @@
 
 **Requirements:** (extras — executados apenas se o MVP 100% validado)
 
-**Plans:** 2 planos
+**Plans:** 1/2 plans executed
 
 Plans:
 **Wave 1**
 
-- [ ] 02-01-PLAN.md — Docker & PostgreSQL: dual-provider, Dockerfile multi-stage, compose prod-like (PostgreSQL 16), fail-fast JWT, .env/.gitignore
+- [x] 02-01-PLAN.md — Docker & PostgreSQL: dual-provider, Dockerfile multi-stage, compose prod-like (PostgreSQL 16), fail-fast JWT, .env/.gitignore
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
