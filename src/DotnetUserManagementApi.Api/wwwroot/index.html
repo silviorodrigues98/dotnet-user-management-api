@@ -270,6 +270,8 @@
     function logout() {
       state.token = null;
       state.email = null;
+      document.getElementById('loginEmail').value = '';
+      document.getElementById('loginPassword').value = '';
       const loginMsg = document.getElementById('loginMessage');
       loginMsg.className = 'message';
       loginMsg.textContent = '';
