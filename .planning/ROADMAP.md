@@ -32,7 +32,7 @@
 
 **Requirements:** (extras — executados apenas se o MVP 100% validado)
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 
 Plans:
 **Wave 1**
@@ -41,7 +41,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 02-02-PLAN.md — Docs & CI: ARCHITECTURE.md (Mermaid, PT-BR) e workflow CI build+test (sem SonarQube)
+- [x] 02-02-PLAN.md — Docs & CI: ARCHITECTURE.md (Mermaid, PT-BR) e workflow CI build+test (sem SonarQube)
 
 ---
 
