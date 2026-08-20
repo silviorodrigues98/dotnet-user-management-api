@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>dotnet-user-management-api</title>
+  <title>Gerenciamento de Usuários</title>
   <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
@@ -68,6 +68,7 @@
       cursor: pointer;
     }
     button.primary:hover { background: #1d4ed8; }
+    button:disabled { opacity: 0.6; cursor: not-allowed; }
     button.secondary {
       padding: 0.4rem 0.8rem;
       border: 1px solid #475569;
@@ -165,6 +166,8 @@
 
     async function submitRegister(event) {
       event.preventDefault();
+      const btn = event.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
       const message = document.getElementById('registerMessage');
       message.className = 'message';
       message.textContent = 'Cadastrando...';
@@ -187,11 +190,15 @@
       } catch (error) {
         message.className = 'message error';
         message.textContent = error.message;
+      } finally {
+        btn.disabled = false;
       }
     }
 
     async function submitLogin(event) {
       event.preventDefault();
+      const btn = event.target.querySelector('button[type="submit"]');
+      btn.disabled = true;
       const message = document.getElementById('loginMessage');
       message.className = 'message';
       message.textContent = 'Autenticando...';
@@ -210,6 +217,8 @@
       } catch (error) {
         message.className = 'message error';
         message.textContent = error.message;
+      } finally {
+        btn.disabled = false;
       }
     }
 
@@ -218,7 +227,16 @@
         headers: { 'Authorization': 'Bearer ' + state.token }
       });
       const tbody = document.getElementById('usersBody');
-      tbody.innerHTML = '';
+      tbody.textContent = '';
+      if (body.length === 0) {
+        const tr = document.createElement('tr');
+        const td = document.createElement('td');
+        td.setAttribute('colspan', '3');
+        td.textContent = 'Nenhum usuário cadastrado.';
+        td.style.textAlign = 'center';
+        tr.appendChild(td);
+        tbody.appendChild(tr);
+      }
       for (const user of body) {
         const tr = document.createElement('tr');
         const tdName = document.createElement('td');
