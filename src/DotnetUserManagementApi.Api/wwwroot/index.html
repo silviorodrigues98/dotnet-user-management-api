@@ -51,7 +51,8 @@
       color: #e2e8f0;
       font-size: 0.95rem;
     }
-    input:focus { outline: none; border-color: #2563eb; }
+    input:focus { border-color: #2563eb; }
+    input:focus-visible, .tab:focus-visible, button:focus-visible { outline: 2px solid #60a5fa; outline-offset: 2px; }
     button.primary {
       width: 100%;
       margin-top: 1.25rem;
@@ -90,12 +91,12 @@
   <h1>Gerenciamento de Usuários</h1>
 
   <section class="card" id="authCard">
-    <div class="tabs">
-      <button id="tabLogin" class="tab active" onclick="switchTab('login')">Entrar</button>
-      <button id="tabRegister" class="tab" onclick="switchTab('register')">Cadastrar</button>
+    <div class="tabs" role="tablist">
+      <button id="tabLogin" class="tab active" role="tab" aria-controls="loginForm" aria-selected="true" onclick="switchTab('login')">Entrar</button>
+      <button id="tabRegister" class="tab" role="tab" aria-controls="registerForm" aria-selected="false" onclick="switchTab('register')">Cadastrar</button>
     </div>
 
-    <form id="loginForm" onsubmit="submitLogin(event)">
+    <form id="loginForm" role="tabpanel" onsubmit="submitLogin(event)">
       <label for="loginEmail">E-mail</label>
       <input id="loginEmail" type="email" required placeholder="voce@exemplo.com" oninput="clearMessage('loginMessage')" />
       <label for="loginPassword">Senha</label>
@@ -104,7 +105,7 @@
       <p id="loginMessage" class="message"></p>
     </form>
 
-    <form id="registerForm" class="hidden" onsubmit="submitRegister(event)">
+    <form id="registerForm" class="hidden" role="tabpanel" onsubmit="submitRegister(event)">
       <label for="regName">Nome</label>
       <input id="regName" type="text" required maxlength="100" placeholder="Seu nome" oninput="clearMessage('registerMessage')" />
       <label for="regEmail">E-mail</label>
@@ -145,6 +146,8 @@
       document.getElementById('registerForm').classList.toggle('hidden', tab !== 'register');
       document.getElementById('tabLogin').classList.toggle('active', tab === 'login');
       document.getElementById('tabRegister').classList.toggle('active', tab === 'register');
+      document.getElementById('tabLogin').setAttribute('aria-selected', tab === 'login');
+      document.getElementById('tabRegister').setAttribute('aria-selected', tab === 'register');
     }
 
     async function request(path, options) {
