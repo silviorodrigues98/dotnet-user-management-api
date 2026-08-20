@@ -6,3 +6,7 @@
 .planning
 *.md
 .playwright-mcp
+
+# Exclui o SQLite local (app.db) — PII/hashes de senha do dev não entram no build context (T-02-03)
+**/app.db
+**/*.db
