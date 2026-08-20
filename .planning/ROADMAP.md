@@ -18,7 +18,7 @@
 
 **Mode:** mvp
 
-**Plans:** 1/2 plans executed
+**Plans:** 2/2 plans complete
 Plans:
 **Wave 1**
 
@@ -26,7 +26,7 @@ Plans:
 
 **Wave 2** *(blocked on Wave 1 completion)*
 
-- [ ] 01-02-PLAN.md — A11y & polish: tab ARIA, focus-visible, font/contrast, empty state, disabled submit, title
+- [x] 01-02-PLAN.md — A11y & polish: tab ARIA, focus-visible, font/contrast, empty state, disabled submit, title
 
 ---
 
